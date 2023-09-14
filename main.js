@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const { Intents } = require('discord.js');
 const fs = require('fs');
+const zapCommand = require('./membre/zap.js'); // Importez la commande
 
 const client = new Discord.Client({
     intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS]
@@ -16,33 +17,8 @@ client.on('ready', () => {
 });
 
 client.on('message', async message => {
-    if (message.channel.id === CHANNEL_ID) {
-        // Vérifier si le bot a la permission de gérer les pseudonymes
-        if (!message.guild.me.permissions.has('MANAGE_NICKNAMES')) {
-            console.log("Le bot n'a pas la permission de gérer les pseudonymes.");
-            return;
-        }
-
-        const numbers = message.content.match(/\d+/g);
-
-        if (numbers) {
-            // Vérifier si le membre a la permission de changer son pseudo
-            if (!message.member.permissions.has('CHANGE_NICKNAME')) {
-                console.log(`L'utilisateur ${message.author.tag} n'a pas la permission de changer son pseudo.`);
-                return;
-            }
-
-            const newNickname = `${message.member.user.username} ⚡ ${numbers.join(', ')}`;
-
-            try {
-                await message.member.setNickname(newNickname);
-                console.log(`Le nom de ${message.author.tag} a été modifié.`);
-                message.react('👍');
-            } catch (error) {
-                console.error('Une erreur est survenue lors de la modification du pseudo :', error);
-            }
-        }
-    }
+    // Utilisez la commande déplacée
+    zapCommand(message);
 });
 
 client.login(token);
